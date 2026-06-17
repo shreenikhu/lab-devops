@@ -1,0 +1,255 @@
+pg-2
+
+mvn --v
+mkdir c2_batch
+cd c2_batch
+mvn archetype:generate -DgroupId=in.tcs -DartifactId=mvn_c2 -DarchetypeId=maven-archetype-quickstart -DarchetypeVersion=1.5 -DinteractiveMode=false
+cd mvn_c2
+mvn package 
+##( change 17->11 in pom.xml)##
+java -cp target/mvn_c2-1.0-SNAPSHOT.jar in.tcs.App
+========================================================================================================================================
+
+prg-3 
+gradle --version
+mkdir shree181
+cd shree181
+gradle init --type java-application
+gradle build 
+gradle run
+
+##build.gradle##
+
+task hello{
+doLast { println "Hello, Shree!"}}
+
+gradle build 
+gradle hello
+=======================================================================================================================
+
+prg-4(migrate)
+
+prg1+ 
+gradle init --type pom
+gradle build
+###if fails in build.gradle##
+
+apply plugin: 'application'
+sourceCompatibility =6
+targetCompatibility = 1.6
+
+mainClassName="in.tcs.App"
+
+gradle build 
+gradle run
+=====================================================================================================================
+prg-5
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+http://localhost:8080
+
+sudo update-alternatives --config java
+
+
+=========================================================================================================
+prg -6
+
+prg1+
+
+git config --global user.name "ShreeNikhithaCugati"
+git config --global user.email "nikhucugati2005@gmail.com"
+ssh-keygen -t ed25519 -C "nikhucugati2005@gmail.com"
+cat ~/.ssh/id_ed25519.pub (paste in ssh)
+git init
+git add pom.xml
+git add src
+git commit -m "first"
+git branch -M main
+git remote add origin git@github.com:ShreeNikhithaCugati/c2_batch.git
+git remote set-url origin git@github.com:ShreeNikhithaCugati/c2_batch.git
+git push -u origin main
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+sudo update-alternatives --config java
+
+
+pipeline {
+
+agent any
+
+stages {
+
+stage('Checkout') {
+
+steps {
+
+git branch: 'main', url: 'https: //github.com/cmritsarada/exp6.git' // Replace with your repository URL
+
+}}
+
+stage('Build') {
+
+steps {
+
+sh 'mvn clean package'} }
+
+stage('Test') {
+
+steps {
+
+sh 'mvn test'
+
+} }}}
+
+
+=======================================================================================================
+
+prg-7
+
+
+ansible --version
+cd c2_batch
+
+## gedit hosts.ini
+
+[local]
+localhost ansible_connection=local
+
+# commands 
+
+ansible all -i hosts.ini --list-hosts
+ansible all -i hosts.ini -m ping
+
+#gedit mypb.yml
+
+ - name: First Playbook
+   hosts: local
+   connection: local
+   tasks:
+     - name: My first task
+       debug:
+         msg: "Ansible is a config mgmt_tool"
+         
+         
+#commands
+ansible-playbook -i hosts.init mypb.yml
+mkdir -p library
+cd library
+
+#gedit first_module.py
+
+#!/usr/bin/python
+from ansible.module_utils.basic import AnsibleModule
+
+def run_module():
+    module_args=dict(
+        name=dict(type='str', required=True)
+        )
+        
+    module= AnsibleModule(argument_spec=module_args)
+    result= {"changed": False, "message": f"Hello,{module.params['name']}!"}
+    module.exit_json(**result)
+        
+if __name__=='__main__':
+     run_module()
+     
+     
+#commands 
+
+cd ..
+chmod +x library/first_module.py
+gedit mypb2.yml
+
+
+---
+- name: Ansible with one module
+  hosts: localhost
+  gather_facts: no
+  tasks:
+   - name: Good Afternoon
+     first_module: 
+        name: "Ansible"
+     register: result
+   - name: Show message
+     debug: 
+        msg: "{{result.message}}"
+        
+ansible-playbook -i hosts.init mypb2.yml    
+=======================================================================================      
+prg-8======
+
+cd c2_batch
+sudo systemctl status jenkins
+sudo update-alternatives --config java
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword  
+     
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ShreeNikhithaCugati/pra.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: "**/target/*.jar", allowEmptyArchive: true
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh """
+                export ANSIBLE_HOST_KEY_CHECKING=False
+                ansible-playbook -i hosts.ini mydeploy.yml --extra-vars='ansible_become_pass=exam@cse'
+                """
+            }
+        }
+    } // closes 'stages'
+} // closes 'pipeline'
+
+
+git branch
+
+now create this below file in desktop (keyboard.jar)
+
+other locations->var->lib->jenkins->workspace->pipp->sudo gedit hosts.ini 	
+
+sudo gedit mydeploy.yml	
+
+
+---
+- name: Deploy Artifact to localhost
+  hosts: localhost
+  tasks:
+    - name: Copy the artifact to the target location
+      become: true
+      become_user: student
+      become_method: su
+      copy:
+        src: "/var/lib/jenkins/workspace/abc/mvn_c2-1.0-SNAPSHOT.jar"
+        dest: "/home/student/keyboard.jar"
+
+
+
+
+
+#note
+path of src 
+other locations->var->lib->jenkins->workspace->pipp->target->right click on mvn file copy the paths ...
