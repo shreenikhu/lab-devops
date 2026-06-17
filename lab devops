@@ -175,6 +175,28 @@ gedit mypb2.yml
         msg: "{{result.message}}"
         
 ansible-playbook -i hosts.init mypb2.yml    
+
+
+
+
+---
+- name: Ansible with one module
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Good Afternoon
+      debug:
+        msg: "Ansible"
+      register: results
+
+    - name: Show message
+      debug:
+        msg: "{{ results.msg }}"
+
+
+
+
 =======================================================================================      
 prg-8======
 
